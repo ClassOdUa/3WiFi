@@ -679,13 +679,13 @@ switch ($action)
 	// Извлекаем тип данных, игнорируя кодировку
 	$contentType = explode('; ', $_SERVER['CONTENT_TYPE']);
 	$contentType = $contentType[0];
+	$l_file =  file_get_contents("php://input");
 	// Проверяем всё необходимое
 	if ($_SERVER['REQUEST_METHOD'] == 'POST'
 	&& ($contentType == 'text/plain'
 	|| $contentType == 'text/csv')
-	&& isset($HTTP_RAW_POST_DATA)
-	&& strlen($HTTP_RAW_POST_DATA) > 0
-	&& strlen($HTTP_RAW_POST_DATA) < 5000000)
+	&& strlen($l_file) > 0
+	&& strlen($l_file) < 5000000)
 	{
 		if (!db_connect())
 		{
@@ -728,7 +728,7 @@ switch ($action)
 			$filename = 'uploads/'.$tid.$ext;
 			if (($handle = fopen($filename, 'ab')) !== false)
 			{
-				fwrite($handle, $HTTP_RAW_POST_DATA);
+				fwrite($handle, $l_file);
 				fclose($handle);
 			}
 			// Проверка на валидность
@@ -795,7 +795,7 @@ switch ($action)
 						} else
 							if (($handle = fopen($filename, 'ab')) !== false)
 							{
-								fwrite($handle, $HTTP_RAW_POST_DATA);
+								fwrite($handle, $l_file);
 								fclose($handle);
 							}
 					}
